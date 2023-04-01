@@ -48,6 +48,7 @@ void init_node_stats() {
     }
     int normal_zone_node=0;
     int exmem_zone_node=0;
+    bool is_normal_zone=false;
     char str[MAX_CHAR_LEN];
     char *zone;
 
@@ -61,8 +62,9 @@ void init_node_stats() {
             strtok(NULL,",");
             strtok(NULL," ");
             zone=strtok(NULL," \n");
-            if(!strcmp(zone,NAME_NORMAL_ZONE)){
+            if(!strcmp(zone,NAME_NORMAL_ZONE) && !is_normal_zone){
                 normal_zone_node++;
+                is_normal_zone=true;
             }else if(!strcmp(zone,NAME_EXMEM_ZONE)){
                 exmem_zone_node++;
             }
@@ -103,7 +105,7 @@ void init_system_mem_size(void) { //set mem_stats 'total' during initialization
         if(fgets(str,MAX_CHAR_LEN,fs)==NULL){
             break;
         }
-        if(!strcmp(strtok(str," "),"Node")){
+        if(!strcmp(strtok(str," "),"Node") && normal_zone_total!=0){
             node = atoi(strtok(NULL,","));
             strtok(NULL," ");
             zone = strtok(NULL," \n");

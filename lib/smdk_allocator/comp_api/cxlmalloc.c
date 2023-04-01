@@ -32,7 +32,7 @@ void set_all_exmem_node_mask(struct bitmask* bmp) {
             node_num=atoi(strtok(NULL,","));
             strtok(NULL," ");
             zone=strtok(NULL," \n");
-            if(!strcmp(zone,NAME_EXMEM_ZONE)){
+            if(!strcmp(zone,NAME_EXMEM_ZONE) && node_num == 1){
                 numa_bitmask_setbit(bmp, node_num);
             }
         }

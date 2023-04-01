@@ -59,7 +59,7 @@
 #define SMDK_INLINE static inline
 
 #define NAME_NORMAL_ZONE "Normal"
-#define NAME_EXMEM_ZONE "ExMem"
+#define NAME_EXMEM_ZONE "Normal"
 #define INVALID_MEM_SIZE (size_t)0
 
 #define MAX_CHAR_LEN 200 /* metadata API */
