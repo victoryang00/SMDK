@@ -17,7 +17,7 @@ C_SRC := smdk_opt_api.c \
 C_OBJS := $(C_SRC:%.c=%.o)
 
 
-override CFLAGS += -I$(JEMALLOC_DIR)/include \
+override CFLAGS += -g -I$(JEMALLOC_DIR)/include \
 		   -I./include \
 		   -I$(CORE_DIR)/include \
 		   -I$(SMDK_ROOT_DIR) \

@@ -56,7 +56,7 @@ void test(size_t size, size_t total, smdk_memtype_t type){
 }
 
 int main(void){
-	smdk_memtype_t type = SMDK_MEM_NORMAL;
+	smdk_memtype_t type = SMDK_MEM_EXMEM;
 	size_t size_gb = 1<<30;
 
 	s_stats_print('G');

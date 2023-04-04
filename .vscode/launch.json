@@ -1,0 +1,44 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "smdk",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/test/heap_allocator/metadata_api/test_metadata_api_node",
+            "args": [],
+            "stopAtEntry": true,
+            "cwd": "${workspaceFolder}/",
+            "environment": [
+                {
+                    "name": "LD_LIBRARY_PATH",
+                    "value": "/home/victoryang00/Documents/sosp24/SMDK/lib/smdk_allocator/lib/"
+                },
+                {
+                    "name": "SMALLOC_CONF",
+                    "value": "use_exmem:true,use_auto_arena_scaling:true,priority:exmem,exmem_zone_size:1000,normal_zone_size:1000,maxmemory_policy:interleave"
+                }
+            ],
+            "externalConsole": false
+            // "MIMode": "lldb",
+            // "MIDebuggerPath": "/usr/bin/lldb",
+        },
+        {
+            "name": "many_sbrk",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/microbench/many_sbrk",
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/build/",
+            "environment": [
+                {
+                    "name": "LOGV",
+                    "value": "0"
+                }
+            ],
+            "externalConsole": false
+            // "MIMode": "lldb",
+            // "MIDebuggerPath": "/usr/bin/lldb",
+        },
+    ]
+}
