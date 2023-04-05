@@ -1,5 +1,7 @@
 #include "internal/cxlmalloc.h"
 #include "jemalloc/jemalloc.h"
+#include <unistd.h>	
+#include <sys/types.h>
 #include <dlfcn.h>
 #include <numa.h>
 
@@ -77,9 +79,29 @@ EXMEM_CONTROL_OFF:
     je_cpu_node_config.nodemask = numa_no_nodes_ptr;
 }
 
+inline init_history_data(char* history_file){
+    FILE* fp = fopen(history_file, "r");
+    if (fp == NULL) {
+        fprintf(stderr, "[Warning] Failed to open history file. "
+                "The history file is not used.\n");
+        return;
+    }
+    char line[MAX_CHAR_LEN];
+    char* token;
+    int i = 0;
+    while (fgets(line, MAX_CHAR_LEN, fp) != NULL) {
+        token = strtok(line, ",");
+        while (token != NULL) {
+            smdk_info.history_data[i] = atoi(token);
+            token = strtok(NULL, ",");
+            i++;
+        }
+    }
+    fclose(fp);
+}
+
 int init_cxlmalloc(void) {
     if (likely(is_cxlmalloc_initialized())) return SMDK_RET_SUCCESS;
-
     smdk_init_helper("CXLMALLOC_CONF", false);
     int ret = init_smdk();
     if (ret == SMDK_RET_USE_EXMEM_FALSE) {
@@ -91,6 +113,9 @@ int init_cxlmalloc(void) {
 
     set_exmem_partition_range_mask();
 
+    if (smdk_info.maxmemory_policy == policy_history){
+        init_history_data(smdk_info.history_file);
+    }
     smdk_info.smdk_initialized = true;
     return ret;
 }
@@ -105,6 +130,35 @@ inline int get_current_prio(void){
     prio = smdk_info.current_prio;
     pthread_rwlock_unlock(&smdk_info.rwlock_current_prio);
     return prio;
+}
+inline int get_rss(void){
+   	/* get RSS on Linux */
+	int fd;
+
+	fd = open("/proc/self/stat", O_RDONLY | O_CLOEXEC);
+	if (fd >= 0) {
+		char buf[1024], *r = buf;
+		ssize_t i, sz = read(fd, buf, 1024);
+
+		close(fd);
+		if (sz > 0) {
+			for (i = 0; i < 23; i++) {
+				while (*r && (*r == ' ' || *r == '\t'))
+					r++;
+				while (*r && (*r != ' ' && *r != '\t'))
+					r++;
+			}
+			while (*r && (*r == ' ' || *r == '\t'))
+				r++;
+			return ((size_t) atol(r)) * 4096;
+		}
+	}
+    return 0;
+}
+
+inline mem_zone_t get_hitory_memtype(void){
+    
+    return mem_zone_exmem;
 }
 
 inline mem_zone_t get_cur_prioritized_memtype(void){

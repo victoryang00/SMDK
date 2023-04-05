@@ -96,6 +96,9 @@ void smdk_init_helper(const char *envname, bool is_opt_api) {
                     if(CONF_MATCH_VALUE("oom")){
                         opt_smdk.maxmemory_policy = policy_oom;
                     }
+                    else if(CONF_MATCH_VALUE("history")){
+                        opt_smdk.maxmemory_policy = policy_history;
+                    }
                     else if(CONF_MATCH_VALUE("interleave")){
                         opt_smdk.maxmemory_policy = policy_interleave;
                     }

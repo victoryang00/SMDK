@@ -105,11 +105,11 @@ void init_system_mem_size(void) { //set mem_stats 'total' during initialization
         if(fgets(str,MAX_CHAR_LEN,fs)==NULL){
             break;
         }
-        if(!strcmp(strtok(str," "),"Node") && normal_zone_total!=0){
+        if(!strcmp(strtok(str," "),"Node")){
             node = atoi(strtok(NULL,","));
             strtok(NULL," ");
             zone = strtok(NULL," \n");
-            if(!strcmp(zone,NAME_NORMAL_ZONE)){
+            if(!strcmp(zone,NAME_NORMAL_ZONE) && normal_zone_total==0){
                 if(fgets(str,MAX_CHAR_LEN,fs)==NULL){
                     goto parsing_fail;
                 }
@@ -133,8 +133,8 @@ void init_system_mem_size(void) { //set mem_stats 'total' during initialization
                     }
                     tok=strtok(str," ");
                 }
-                smdk_info.stats_per_node[mem_zone_exmem].total[node]=atoi(strtok(NULL," "))*page_size;
-                exmem_zone_total+=smdk_info.stats_per_node[mem_zone_exmem].total[node];
+                smdk_info.stats_per_node[mem_zone_exmem].total[node-1]=atoi(strtok(NULL," "))*page_size;
+                exmem_zone_total+=smdk_info.stats_per_node[mem_zone_exmem].total[node-1];
             }
         }
     }

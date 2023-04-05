@@ -111,6 +111,7 @@ typedef unsigned (*get_target_arena_t)(mem_zone_t type);
 typedef struct smdk_param{
     int current_prio;
     int maxmemory_policy;
+    char *history_file;
     bool smdk_initialized;
     get_target_arena_t get_target_arena;
     pthread_rwlock_t rwlock_current_prio;

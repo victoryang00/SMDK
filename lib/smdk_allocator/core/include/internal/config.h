@@ -94,6 +94,7 @@ typedef enum {
     policy_oom,             /* priority : 1->0->error */
     policy_interleave,      /* priority : 1->0->1->0->... */
     policy_remain,          /* priority : 1->0->0->0->... */
+    policy_history,          /* according to the history data we got */
 } maxmemory_policy_t;
 
 extern bool conf_next(char const **opts_p, char const **k_p, size_t *klen_p, char const **v_p, size_t *vlen_p);
