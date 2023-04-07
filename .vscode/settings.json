@@ -1,0 +1,12 @@
+{
+    "files.associations": {
+        "*.fc": "fortran-modern",
+        "*.v": "coq",
+        "alloc.h": "c",
+        "cxlmalloc.h": "c",
+        "jemalloc.h": "c",
+        "*.inc": "c",
+        "typeinfo": "c",
+        "execinfo.h": "c"
+    }
+}

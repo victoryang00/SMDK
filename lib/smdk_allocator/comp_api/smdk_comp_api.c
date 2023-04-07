@@ -1,7 +1,8 @@
 #include "core/include/internal/alloc.h"
 #include "internal/cxlmalloc.h"
 #include "jemalloc/jemalloc.h"
-
+#include <numaif.h>
+#include <execinfo.h>
 SMDK_EXPORT
 void *malloc(size_t size) {
     CXLMALLOC_PRECONDITION(malloc(size));
@@ -51,6 +52,7 @@ void free(void *ptr) {
     return s_free_internal(ptr);
 }
 
+
 SMDK_EXPORT
 void *mmap(void *start, size_t len, int prot, int flags, int fd, off_t off) {
     void *ret = NULL;
@@ -79,6 +81,11 @@ void *mmap(void *start, size_t len, int prot, int flags, int fd, off_t off) {
         }
         set_interleave_policy(flags);
         ret = opt_syscall.orig_mmap(start, len, prot, flags, fd, off);
+        if (flags & MAP_EXMEM){
+            opt_syscall.orig_set_mempolicy(MPOL_BIND, ret, 1);
+        }else{
+            opt_syscall.orig_set_mempolicy(MPOL_BIND, ret, 0);
+        }
         if (likely(ret)) {
             /* update_arena_pool only after smdk has been initialized */
             update_arena_pool(prio, len);

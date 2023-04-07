@@ -27,7 +27,7 @@
             "name": "many_malloc",
             "type": "cppdbg",
             "request": "launch",
-            "program": "/home/victoryang00/Documents/SlugAllocator/build/microbench/many_malloc",
+            "program": "/home/victoryang00/Documents/SlugAllocator/build/microbench/many_calloc",
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [
@@ -37,7 +37,7 @@
                 },
                 {
                     "name": "CXLMALLOC_CONF",
-                    "value": "use_exmem:true,use_auto_arena_scaling:true,priority:exmem,exmem_zone_size:40000,normal_zone_size:40000,maxmemory_policy:oom"
+                    "value": "use_exmem:true,use_auto_arena_scaling:true,priority:normal,exmem_zone_size:40000,normal_zone_size:1000,maxmemory_policy:oom"
                 }
             ],
             "externalConsole": false

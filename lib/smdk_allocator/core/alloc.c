@@ -57,7 +57,7 @@ inline mem_zone_t get_memtype_from_arenaidx(unsigned idx) {
 
 inline void *s_malloc_internal(mem_zone_t type, size_t size, bool zeroed) {
     if (unlikely(!is_memtype_valid(type))) return NULL;
-
+    // todo: mallocx are
     set_tsd_set_cur_mem_type(type);
     int flags = MALLOCX_ARENA(get_arena_idx(type));
     if (zeroed) {
