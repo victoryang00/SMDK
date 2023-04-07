@@ -146,19 +146,7 @@ void* node1_extent_alloc(extent_hooks_t* extent_hooks,
     assert(size % PAGE_SIZE == 0);
     if (new_addr)
         return NULL;
-    void *mem;
-    struct bitmask *bmp;
-
-    bmp = numa_allocate_nodemask();
-    numa_bitmask_setbit(bmp, 1);
-    mem = opt_syscall.orig_mmap(0, size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS,
-                                0, 0);
-    if (mem == (char *)-1)
-        mem = NULL;
-    else
-        mbind(mem, size, MPOL_BIND, bmp ? bmp->maskp : NULL, bmp ? bmp->size + 1 : 0,
-		  0);
-	numa_bitmask_free(bmp);
+    void *mem= numa_alloc_onnode(size, 1);
     if(!mem)
         return NULL;
     (*zero) = false;
@@ -230,19 +218,7 @@ void* node0_extent_alloc(extent_hooks_t* extent_hooks,
     assert(size % PAGE_SIZE == 0);
     if (new_addr)
         return NULL;
-    void *mem;
-    struct bitmask *bmp;
-
-    bmp = numa_allocate_nodemask();
-    numa_bitmask_setbit(bmp, 0);
-    mem = opt_syscall.orig_mmap(0, size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS,
-                                0, 0);
-    if (mem == (char *)-1)
-        mem = NULL;
-    else
-        mbind(mem, size, MPOL_BIND, bmp ? bmp->maskp : NULL, bmp ? bmp->size + 1 : 0,
-		  0);
-	numa_bitmask_free(bmp);
+    void *mem= numa_alloc_onnode(size, 0);
     if(!mem)
         return NULL;
     (*zero) = false;
