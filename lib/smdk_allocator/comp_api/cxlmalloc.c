@@ -190,7 +190,6 @@ inline int update_arena_pool(int prio, size_t allocated){
 
 tr_syscall_config opt_syscall = {
     .orig_mmap = NULL,
-    .orig_set_mempolicy = NULL,
     .is_initialized = false,
 };
 
@@ -204,9 +203,8 @@ inline int init_mmap_ptr(void){
     }
 
     opt_syscall.orig_mmap = (mmap_ptr_t)dlsym(RTLD_NEXT, "mmap");
-    opt_syscall.orig_set_mempolicy  = (set_mempolicy_ptr_t)dlsym(RTLD_NEXT, "set_mempolicy");
-    if (opt_syscall.orig_mmap == NULL || opt_syscall.orig_set_mempolicy == NULL) {
-        fprintf(stderr, "Error in dlsym(RTLD_NEXT,\"mmap OR set_mempolicy\")\n");
+    if (opt_syscall.orig_mmap == NULL) {
+        fprintf(stderr, "Error in dlsym(RTLD_NEXT,\"mmap\")\n");
         return SMDK_RET_INIT_MMAP_PTR_FAIL;
     } else {
         opt_syscall.is_initialized = true;

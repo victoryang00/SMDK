@@ -28,10 +28,8 @@ extern int get_current_prio(void);
 #define RET_USE_EXMEM_FALSE (1)
 #define CXLMALLOC_CONSTRUCTOR_PRIORITY (SMALLOC_CONSTRUCTOR_PRIORITY-1)
 typedef void *(*mmap_ptr_t)(void *, size_t, int, int, int, off_t);
-typedef void *(*set_mempolicy_ptr_t)(int, const unsigned long *, unsigned long);
 typedef struct {
     mmap_ptr_t orig_mmap;
-    set_mempolicy_ptr_t orig_set_mempolicy;
     bool is_initialized;
     unsigned char calloc_buf[4096];
 } tr_syscall_config;

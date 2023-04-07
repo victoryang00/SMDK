@@ -82,9 +82,9 @@ void *mmap(void *start, size_t len, int prot, int flags, int fd, off_t off) {
         set_interleave_policy(flags);
         ret = opt_syscall.orig_mmap(start, len, prot, flags, fd, off);
         if (flags & MAP_EXMEM){
-            opt_syscall.orig_set_mempolicy(MPOL_BIND, ret, 1);
+            set_mempolicy(MPOL_BIND, ret, 1);
         }else{
-            opt_syscall.orig_set_mempolicy(MPOL_BIND, ret, 0);
+            set_mempolicy(MPOL_BIND, ret, 0);
         }
         if (likely(ret)) {
             /* update_arena_pool only after smdk has been initialized */
