@@ -147,7 +147,10 @@ void* node1_extent_alloc(extent_hooks_t* extent_hooks,
     int node = 1; // Specify the target NUMA node
     if (numa_available() != -1) {
         void *ptr = opt_syscall.orig_malloc(size + alignment - 1);
-        if (ptr == NULL) {
+        if (likely(ptr)) {
+            /* update_arena_pool only after smdk has been initialized */
+            update_arena_pool(get_current_prio(), size);
+        } else {
             return NULL;
         }
 
@@ -228,7 +231,10 @@ void* node0_extent_alloc(extent_hooks_t* extent_hooks,
     int node = 0; // Specify the target NUMA node
     if (numa_available() != -1) {
         void *ptr = opt_syscall.orig_malloc(size + alignment - 1);
-        if (ptr == NULL) {
+        if (likely(ptr)) {
+            /* update_arena_pool only after smdk has been initialized */
+            update_arena_pool(get_current_prio(), size);
+        } else {
             return NULL;
         }
 
