@@ -53,6 +53,7 @@
 #define KB (1024)
 #endif
 
+#define SLUGALLOC_SOCKET_PATH "/tmp/slugalloc_socket"
 #define SMDK_EXPORT __attribute__((visibility("default")))
 #define SMDK_CONSTRUCTOR(n) __attribute__((constructor ((n))))
 #define SMALLOC_CONSTRUCTOR_PRIORITY 102 /* ~100: reserved for system, 101: reserved for cxlmalloc */

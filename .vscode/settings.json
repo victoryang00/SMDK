@@ -7,6 +7,8 @@
         "jemalloc.h": "c",
         "*.inc": "c",
         "typeinfo": "c",
-        "execinfo.h": "c"
+        "execinfo.h": "c",
+        "config.h": "c",
+        "init.h": "c"
     }
 }

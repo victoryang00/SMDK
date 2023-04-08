@@ -49,6 +49,7 @@ smdk_config opt_smdk = {
     .nr_exmem_arena = 1, /* the number of arena in arena pool */
     .maxmemory_policy = 0, /* maxmemory_policy : oom, interleave, remain */
     .exmem_partition_range = {0, },
+
 };
 
 smdk_param smdk_info = {
@@ -143,15 +144,24 @@ void* node1_extent_alloc(extent_hooks_t* extent_hooks,
     void* new_addr, size_t size, size_t alignment, bool* zero,
     bool* commit, unsigned arena_index)
 {
-    assert(size % PAGE_SIZE == 0);
-    if (new_addr)
-        return NULL;
-    void *mem= numa_alloc_onnode(size, 1);
-    if(!mem)
-        return NULL;
-    (*zero) = false;
-    (*commit) = true;
-    return mem;
+    int node = 1; // Specify the target NUMA node
+    if (numa_available() != -1) {
+        void *ptr = opt_syscall.orig_malloc(size + alignment - 1);
+        if (ptr == NULL) {
+            return NULL;
+        }
+
+        void *aligned_ptr = (void *)(((uintptr_t)ptr + alignment - 1) & ~(alignment - 1));
+        numa_tonode_memory(aligned_ptr, size, node);
+
+        *zero = true;
+        *commit = true;
+        return aligned_ptr;
+    } else {
+        fprintf(stderr, "NUMA not available on this system.\n");
+        exit(EXIT_FAILURE);
+    }
+
 }
 
 bool node1_extent_dalloc(extent_hooks_t* extent_hooks,
@@ -215,15 +225,23 @@ void* node0_extent_alloc(extent_hooks_t* extent_hooks,
     void* new_addr, size_t size, size_t alignment, bool* zero,
     bool* commit, unsigned arena_index)
 {
-    assert(size % PAGE_SIZE == 0);
-    if (new_addr)
-        return NULL;
-    void *mem= numa_alloc_onnode(size, 0);
-    if(!mem)
-        return NULL;
-    (*zero) = false;
-    (*commit) = true;
-    return mem;
+    int node = 0; // Specify the target NUMA node
+    if (numa_available() != -1) {
+        void *ptr = opt_syscall.orig_malloc(size + alignment - 1);
+        if (ptr == NULL) {
+            return NULL;
+        }
+
+        void *aligned_ptr = (void *)(((uintptr_t)ptr + alignment - 1) & ~(alignment - 1));
+        numa_tonode_memory(aligned_ptr, size, node);
+
+        *zero = true;
+        *commit = true;
+        return aligned_ptr;
+    } else {
+        fprintf(stderr, "NUMA not available on this system.\n");
+        exit(EXIT_FAILURE);
+    }
 }
 
 bool node0_extent_dalloc(extent_hooks_t* extent_hooks,
